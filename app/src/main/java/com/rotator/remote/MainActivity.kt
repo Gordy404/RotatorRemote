@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlin.math.cos
@@ -156,6 +157,21 @@ fun ConnectionBar(viewModel: RotatorViewModel) {
 
 @Composable
 fun ConnectionScreen(viewModel: RotatorViewModel) {
+    ConnectionScreenContent(
+        manualIp = viewModel.manualIp,
+        onManualIpChange = { viewModel.manualIp = it },
+        onDiscoverClick = { viewModel.startDiscovery() },
+        onConnectManualClick = { viewModel.connectManual(viewModel.manualIp) }
+    )
+}
+
+@Composable
+fun ConnectionScreenContent(
+    manualIp: String,
+    onManualIpChange: (String) -> Unit,
+    onDiscoverClick: () -> Unit,
+    onConnectManualClick: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -178,7 +194,7 @@ fun ConnectionScreen(viewModel: RotatorViewModel) {
         Spacer(modifier = Modifier.height(32.dp))
         
         Button(
-            onClick = { viewModel.startDiscovery() },
+            onClick = onDiscoverClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
@@ -198,8 +214,8 @@ fun ConnectionScreen(viewModel: RotatorViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
         
         OutlinedTextField(
-            value = viewModel.manualIp,
-            onValueChange = { viewModel.manualIp = it },
+            value = manualIp,
+            onValueChange = onManualIpChange,
             label = { Text("Server IP or Domain") },
             placeholder = { Text("192.168.1.100 or yourshack.duckdns.org") },
             modifier = Modifier.fillMaxWidth(),
@@ -209,9 +225,9 @@ fun ConnectionScreen(viewModel: RotatorViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
         
         OutlinedButton(
-            onClick = { viewModel.connectManual(viewModel.manualIp) },
+            onClick = onConnectManualClick,
             modifier = Modifier.fillMaxWidth(),
-            enabled = viewModel.manualIp.isNotBlank()
+            enabled = manualIp.isNotBlank()
         ) {
             Icon(Icons.Filled.Phone, contentDescription = null)
             Spacer(modifier = Modifier.width(8.dp))
@@ -460,5 +476,18 @@ fun CompassView(heading: Int, isRotating: Boolean) {
                 center = center
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ConnectionScreenPreview() {
+    MaterialTheme {
+        ConnectionScreenContent(
+            manualIp = "192.168.1.100",
+            onManualIpChange = {},
+            onDiscoverClick = {},
+            onConnectManualClick = {}
+        )
     }
 }

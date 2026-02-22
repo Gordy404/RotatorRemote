@@ -1,8 +1,8 @@
-#Thu Feb 12 19:56:48 GMT 2026
-base.0=C\:\\Users\\gordo\\Desktop\\RotatorRemote1\\RotatorRemote\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
-base.1=C\:\\Users\\gordo\\Desktop\\RotatorRemote1\\RotatorRemote\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
-base.2=C\:\\Users\\gordo\\Desktop\\RotatorRemote1\\RotatorRemote\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\14\\classes.dex
-base.3=C\:\\Users\\gordo\\Desktop\\RotatorRemote1\\RotatorRemote\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
+#Sun Feb 22 19:20:13 GMT 2026
+base.0=C\:\\Users\\gordo\\Desktop\\RotatorRemote\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+base.1=C\:\\Users\\gordo\\Desktop\\RotatorRemote\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+base.2=C\:\\Users\\gordo\\Desktop\\RotatorRemote\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\14\\classes.dex
+base.3=C\:\\Users\\gordo\\Desktop\\RotatorRemote\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
 path.0=classes.dex
 path.1=0/classes.dex
 path.2=14/classes.dex

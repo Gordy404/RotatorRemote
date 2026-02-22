@@ -36,10 +36,10 @@ com.rotator.remote.app-ui-release-34 C:\Users\gordo\.gradle\caches\8.10.2\transf
 com.rotator.remote.app-startup-runtime-1.1.1-35 C:\Users\gordo\.gradle\caches\8.10.2\transforms\ee26b40ab6473739c4967bafa9246bf9\transformed\startup-runtime-1.1.1\res
 com.rotator.remote.app-lifecycle-runtime-ktx-2.7.0-36 C:\Users\gordo\.gradle\caches\8.10.2\transforms\f0cea33a56de3f099d963b53c4e2a7de\transformed\lifecycle-runtime-ktx-2.7.0\res
 com.rotator.remote.app-material-ripple-release-37 C:\Users\gordo\.gradle\caches\8.10.2\transforms\ff07229494c85f516381a54b7b6f8146\transformed\material-ripple-release\res
-com.rotator.remote.app-pngs-38 C:\Users\gordo\Desktop\RotatorRemote1\RotatorRemote\app\build\generated\res\pngs\debug
-com.rotator.remote.app-resValues-39 C:\Users\gordo\Desktop\RotatorRemote1\RotatorRemote\app\build\generated\res\resValues\debug
-com.rotator.remote.app-packageDebugResources-40 C:\Users\gordo\Desktop\RotatorRemote1\RotatorRemote\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.rotator.remote.app-packageDebugResources-41 C:\Users\gordo\Desktop\RotatorRemote1\RotatorRemote\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.rotator.remote.app-debug-42 C:\Users\gordo\Desktop\RotatorRemote1\RotatorRemote\app\build\intermediates\merged_res\debug\mergeDebugResources
-com.rotator.remote.app-debug-43 C:\Users\gordo\Desktop\RotatorRemote1\RotatorRemote\app\src\debug\res
-com.rotator.remote.app-main-44 C:\Users\gordo\Desktop\RotatorRemote1\RotatorRemote\app\src\main\res
+com.rotator.remote.app-pngs-38 C:\Users\gordo\Desktop\RotatorRemote\app\build\generated\res\pngs\debug
+com.rotator.remote.app-resValues-39 C:\Users\gordo\Desktop\RotatorRemote\app\build\generated\res\resValues\debug
+com.rotator.remote.app-packageDebugResources-40 C:\Users\gordo\Desktop\RotatorRemote\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.rotator.remote.app-packageDebugResources-41 C:\Users\gordo\Desktop\RotatorRemote\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.rotator.remote.app-debug-42 C:\Users\gordo\Desktop\RotatorRemote\app\build\intermediates\merged_res\debug\mergeDebugResources
+com.rotator.remote.app-debug-43 C:\Users\gordo\Desktop\RotatorRemote\app\src\debug\res
+com.rotator.remote.app-main-44 C:\Users\gordo\Desktop\RotatorRemote\app\src\main\res
