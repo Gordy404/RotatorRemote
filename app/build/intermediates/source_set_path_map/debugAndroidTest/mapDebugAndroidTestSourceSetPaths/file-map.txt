@@ -1,0 +1,4 @@
+com.rotator.remote.test.app-androidTest-0 C:\Users\gordo\Desktop\RotatorRemote1\RotatorRemote\app\build\generated\res\resValues\androidTest\debug
+com.rotator.remote.test.app-mergeDebugAndroidTestResources-1 C:\Users\gordo\Desktop\RotatorRemote1\RotatorRemote\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.rotator.remote.test.app-mergeDebugAndroidTestResources-2 C:\Users\gordo\Desktop\RotatorRemote1\RotatorRemote\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.rotator.remote.test.app-debugAndroidTest-3 C:\Users\gordo\Desktop\RotatorRemote1\RotatorRemote\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources

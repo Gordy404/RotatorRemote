@@ -1,0 +1,26 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "gradle",
+			"id": "c:\\Users\\gordo\\Desktop\\RotatorRemotebuildEnvironmentRotatorRemote",
+			"script": "buildEnvironment",
+			"description": "Displays all buildscript dependencies declared in root project 'RotatorRemote'.",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"project": "RotatorRemote",
+			"buildFile": "C:\\Users\\gordo\\Desktop\\RotatorRemote\\build.gradle.kts",
+			"rootProject": "RotatorRemote",
+			"projectFolder": "c:\\Users\\gordo\\Desktop\\RotatorRemote",
+			"workspaceFolder": "c:\\Users\\gordo\\Desktop\\RotatorRemote",
+			"args": "",
+			"javaDebug": false,
+			"problemMatcher": [
+				"$gradle"
+			],
+			"label": "gradle: buildEnvironment"
+		}
+	]
+}
