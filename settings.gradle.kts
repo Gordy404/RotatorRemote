@@ -14,8 +14,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
 rootProject.name = "RotatorRemote"
 include(":app")
+include(":RotatorServer:app")
+project(":RotatorServer:app").projectDir = file("RotatorServer/app")

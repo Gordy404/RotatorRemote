@@ -1,7 +1,32 @@
 plugins {
-  // id("com.android.application") version "8.2.0" apply false
-	id("com.android.application") version "9.0.1" apply false
-	// https://maven.google.com/web/index.html?q=applic#com.android.application:com.android.application.gradle.plugin
-	id("org.jetbrains.kotlin.android") version "2.2.10" apply false
-	id("org.jetbrains.kotlin.plugin.compose") version "2.2.10" apply false
+    id("com.android.application") version "9.0.1" apply false
+    id("org.jetbrains.kotlin.android") version "2.2.10" apply false
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10" apply false
+}
+
+tasks.register("incrementBuildNumber") {
+    doLast {
+        val propsFile = file("gradle.properties")
+        if (!propsFile.exists()) return@doLast
+        
+        val props = java.util.Properties()
+        propsFile.inputStream().use { props.load(it) }
+        
+        val current = props.getProperty("test_build_number")?.toIntOrNull() ?: 0
+        val next = (current + 1).toString().padStart(3, '0')
+        
+        // Only update if it changed
+        props.setProperty("test_build_number", next)
+        propsFile.outputStream().use { props.store(it, null) }
+        println("Build number incremented to $next")
+    }
+}
+
+// Only hook into the main app's assemble tasks to avoid multiple increments
+subprojects {
+    if (name == "app" || path == ":RotatorServer:app") {
+        tasks.matching { it.name.startsWith("assemble") }.configureEach {
+            this.finalizedBy(rootProject.tasks.named("incrementBuildNumber"))
+        }
+    }
 }

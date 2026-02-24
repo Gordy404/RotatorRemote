@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:2:1-28:12
-INJECTED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:2:1-28:12
-INJECTED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:2:1-28:12
-INJECTED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:2:1-28:12
+ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:2:1-29:12
+INJECTED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:2:1-29:12
+INJECTED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:2:1-29:12
+INJECTED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:2:1-29:12
 MERGED from [androidx.compose.material3:material3:1.1.2] C:\Users\gordo\.gradle\caches\9.2.1\transforms\a38565bd5e93ffed527f8f5bc23a8a8e\workspace\transformed\material3-1.1.2\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.activity:activity:1.8.2] C:\Users\gordo\.gradle\caches\9.2.1\transforms\487aafc38cf7dc351b086e2a52bb5790\workspace\transformed\activity-1.8.2\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.activity:activity-ktx:1.8.2] C:\Users\gordo\.gradle\caches\9.2.1\transforms\47b4dbf058e97f44e13255d2eac1d787\workspace\transformed\activity-ktx-1.8.2\AndroidManifest.xml:2:1-7:12
@@ -74,8 +74,8 @@ ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml
 	android:name
 		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:8:22-83
 application
-ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:10:5-26:19
-INJECTED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:10:5-26:19
+ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:10:5-27:19
+INJECTED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:10:5-27:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.5.4] C:\Users\gordo\.gradle\caches\9.2.1\transforms\49b131ca68c5726bec3fd268bfc76b42\workspace\transformed\ui-tooling-release\AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.5.4] C:\Users\gordo\.gradle\caches\9.2.1\transforms\49b131ca68c5726bec3fd268bfc76b42\workspace\transformed\ui-tooling-release\AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.emoji2:emoji2:1.4.0] C:\Users\gordo\.gradle\caches\9.2.1\transforms\04657157c13b7d7cca3698b916c033d7\workspace\transformed\emoji2-1.4.0\AndroidManifest.xml:23:5-33:19
@@ -102,26 +102,28 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\gordo\.gradle\cach
 		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:11:9-35
 	android:theme
 		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:14:9-72
+	android:usesCleartextTraffic
+		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:15:9-44
 activity#com.rotator.remote.MainActivity
-ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:16:9-25:20
+ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:17:9-26:20
 	android:screenOrientation
-		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:19:13-49
+		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:20:13-49
 	android:exported
-		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:18:13-36
+		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:19:13-36
 	android:theme
-		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:20:13-76
+		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:21:13-76
 	android:name
-		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:17:13-41
+		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:18:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:21:13-24:29
+ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:22:13-25:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:22:17-69
+ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:23:17-69
 	android:name
-		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:22:25-66
+		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:23:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:23:17-77
+ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:24:17-77
 	android:name
-		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:23:27-74
+		ADDED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml:24:27-74
 uses-sdk
 INJECTED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\gordo\Desktop\RotatorRemote\app\src\main\AndroidManifest.xml

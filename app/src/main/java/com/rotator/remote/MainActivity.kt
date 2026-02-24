@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.GestureCancellationException
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -25,6 +26,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlin.math.cos
 import kotlin.math.sin
@@ -33,12 +35,31 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
+            MaterialTheme(
+                colorScheme = darkColorScheme(
+                    background = Color(0xFF121212),
+                    surface = Color(0xFF1E1E1E),
+                    primary = Color(0xFFFF8100),
+                    onBackground = Color.White,
+                    onSurface = Color.White
+                )
+            ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    RotatorApp()
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        RotatorApp()
+                        
+                        Text(
+                            text = "test no ${BuildConfig.TEST_BUILD_NUMBER}",
+                            color = Color.White.copy(alpha = 0.5f),
+                            fontSize = 10.sp,
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .padding(4.dp)
+                        )
+                    }
                 }
             }
         }
@@ -60,7 +81,7 @@ fun RotatorApp(viewModel: RotatorViewModel = viewModel()) {
         Spacer(modifier = Modifier.height(24.dp))
         
         when (connectionState) {
-            RotatorViewModel.ConnectionState.DISCONNECTED -> {
+            RotatorViewModel.ConnectionState.DISCONNECTED, RotatorViewModel.ConnectionState.ERROR -> {
                 ConnectionScreen(viewModel)
             }
             RotatorViewModel.ConnectionState.CONNECTED -> {
@@ -103,6 +124,38 @@ fun RotatorApp(viewModel: RotatorViewModel = viewModel()) {
             }
         )
     }
+
+    // Hardware Missing Dialog
+    if (connectionState == RotatorViewModel.ConnectionState.CONNECTED && !viewModel.isArduinoConnected) {
+        AlertDialog(
+            onDismissRequest = { },
+            title = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Filled.Warning, contentDescription = null, tint = Color.Red)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Hardware Missing")
+                }
+            },
+            text = { 
+                Column {
+                    Text("The Arduino is not connected to the server.")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Server IP: ${viewModel.serverIp ?: "Unknown"}", style = MaterialTheme.typography.bodySmall)
+                    Text("Please check the USB connection at the server location.", style = MaterialTheme.typography.bodySmall)
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.requestStatus() }) {
+                    Text("RETRY")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.disconnect() }) {
+                    Text("DISCONNECT")
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -112,7 +165,7 @@ fun ConnectionBar(viewModel: RotatorViewModel) {
         colors = CardDefaults.cardColors(
             containerColor = when (viewModel.connectionState) {
                 RotatorViewModel.ConnectionState.CONNECTED -> 
-                    MaterialTheme.colorScheme.primaryContainer
+                    MaterialTheme.colorScheme.surfaceVariant
                 RotatorViewModel.ConnectionState.ERROR -> 
                     MaterialTheme.colorScheme.errorContainer
                 else -> MaterialTheme.colorScheme.surfaceVariant
@@ -126,30 +179,58 @@ fun ConnectionBar(viewModel: RotatorViewModel) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
-                Text(
-                    text = when (viewModel.connectionState) {
-                        RotatorViewModel.ConnectionState.CONNECTED -> "Connected"
-                        RotatorViewModel.ConnectionState.CONNECTING -> "Connecting..."
-                        RotatorViewModel.ConnectionState.DISCOVERING -> "Discovering..."
-                        RotatorViewModel.ConnectionState.ERROR -> "Connection Error"
-                        RotatorViewModel.ConnectionState.DISCONNECTED -> "Not Connected"
-                    },
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                // Heartbeat/Status LED
+                Box(
+                    modifier = Modifier
+                        .size(12.dp)
+                        .background(
+                            color = when {
+                                viewModel.connectionState != RotatorViewModel.ConnectionState.CONNECTED -> Color.Gray
+                                viewModel.isArduinoConnected -> Color.Green
+                                else -> Color.Red
+                            },
+                            shape = CircleShape
+                        )
                 )
-                if (viewModel.serverIp != null) {
+                Spacer(modifier = Modifier.width(12.dp))
+                Column {
                     Text(
-                        text = viewModel.serverIp!!,
-                        style = MaterialTheme.typography.bodySmall
+                        text = when (viewModel.connectionState) {
+                            RotatorViewModel.ConnectionState.CONNECTED -> "Connected"
+                            RotatorViewModel.ConnectionState.CONNECTING -> "Connecting..."
+                            RotatorViewModel.ConnectionState.DISCOVERING -> "Discovering..."
+                            RotatorViewModel.ConnectionState.ERROR -> "Connection Error"
+                            RotatorViewModel.ConnectionState.DISCONNECTED -> "Not Connected"
+                        },
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
                     )
+                    if (viewModel.serverIp != null) {
+                        Text(
+                            text = viewModel.serverIp!!,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
                 }
             }
             
-            if (viewModel.connectionState == RotatorViewModel.ConnectionState.CONNECTED) {
-                IconButton(onClick = { viewModel.disconnect() }) {
-                    Icon(Icons.Filled.Close, contentDescription = "Disconnect")
-                }
+            Button(
+                onClick = {
+                    if (viewModel.connectionState == RotatorViewModel.ConnectionState.CONNECTED) {
+                        viewModel.disconnect()
+                    } else {
+                        viewModel.startDiscovery()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (viewModel.connectionState == RotatorViewModel.ConnectionState.CONNECTED)
+                        MaterialTheme.colorScheme.error
+                    else
+                        MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Text(if (viewModel.connectionState == RotatorViewModel.ConnectionState.CONNECTED) "Disconnect" else "Connect")
             }
         }
     }
@@ -351,8 +432,10 @@ fun MomentaryButton(
                     onPress = {
                         onPress()
                         try {
-                            tryAwaitRelease()
-                        } catch (e: Exception) {}
+                            awaitRelease()
+                        } catch (e: GestureCancellationException) {
+                            // Ignore
+                        }
                         onRelease()
                     }
                 )
@@ -389,7 +472,8 @@ fun CompassView(heading: Int, isRotating: Boolean) {
         animationSpec = tween(
             durationMillis = 300,
             easing = FastOutSlowInEasing
-        )
+        ),
+        label = "headingAnimation"
     )
     
     Box(
@@ -425,7 +509,7 @@ fun CompassView(heading: Int, isRotating: Boolean) {
                     x,
                     y,
                     android.graphics.Paint().apply {
-                        color = android.graphics.Color.BLACK
+                        color = android.graphics.Color.WHITE
                         textSize = 40f
                         textAlign = android.graphics.Paint.Align.CENTER
                     }
@@ -471,7 +555,7 @@ fun CompassView(heading: Int, isRotating: Boolean) {
             
             // Center dot
             drawCircle(
-                color = Color.Black,
+                color = Color.White,
                 radius = 8.dp.toPx(),
                 center = center
             )

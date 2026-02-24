@@ -14,6 +14,9 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        val buildNumber = project.findProperty("test_build_number")?.toString() ?: "000"
+        buildConfigField("String", "TEST_BUILD_NUMBER", "\"${buildNumber}\"")
     }
 
     buildTypes {
@@ -37,6 +40,7 @@ android {
     
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
