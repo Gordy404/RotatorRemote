@@ -1,0 +1,10 @@
+{
+  "mcp": {
+    "servers": {
+      "Claude": {
+        "type": "http",
+        "url": "https://claude.ai/"
+      }
+    }
+  }
+}

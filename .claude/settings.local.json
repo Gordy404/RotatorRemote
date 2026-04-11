@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew :RotatorServer:app:assembleDebug)",
+      "Bash(./gradlew :RotatorServer:app:clean)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(./gradlew :app:assembleDebug)",
+      "Bash(./gradlew :app:assembleDebug :RotatorServer:app:assembleDebug)",
+      "Bash(./gradlew tasks:*)",
+      "mcp__ide__getDiagnostics"
+    ]
+  }
+}

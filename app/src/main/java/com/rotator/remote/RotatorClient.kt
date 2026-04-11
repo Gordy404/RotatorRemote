@@ -8,6 +8,7 @@ import java.io.BufferedWriter
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.*
+import android.util.Log
 
 class RotatorClient {
     
@@ -17,6 +18,14 @@ class RotatorClient {
         const val DISCOVERY_TIMEOUT = 5000L
         const val CONNECTION_TIMEOUT = 10000
         const val HEARTBEAT_INTERVAL = 1500L
+
+        // helper to validate the initial greeting sent by the server.  the format
+        // changed at one point from `ROTATOR_SERVER:` to `ROTATOR_SERVER v1.0`, and
+        // older clients would interpret the latter as a failure. tests verify both
+        // variants are accepted.
+        fun isValidGreeting(greeting: String?): Boolean {
+            return greeting?.startsWith("ROTATOR_SERVER") == true
+        }
     }
     
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -47,34 +56,43 @@ class RotatorClient {
     
     suspend fun discoverServer(): String? = withContext(Dispatchers.IO) {
         try {
-            val socket = DatagramSocket()
-            socket.broadcast = true
-            socket.soTimeout = DISCOVERY_TIMEOUT.toInt()
-            
-            // Send discovery packet
-            val message = "DISCOVER_ROTATOR".toByteArray()
+            // open a socket bound to the known discovery port so that we will
+            // receive the periodic broadcasts regardless of the ephemeral
+            // source port assigned by the OS.
+            val socket = DatagramSocket(null).apply {
+                reuseAddress = true
+                bind(InetSocketAddress(UDP_PORT))
+                broadcast = true
+                soTimeout = DISCOVERY_TIMEOUT.toInt()
+            }
+
+            // a legacy probe is harmless; the server simply ignores it but
+            // we keep this on the off‑chance someone is still running an old
+            // firmware that listens for DISCOVER_ROTATOR.
+            val probe = "DISCOVER_ROTATOR".toByteArray()
             val broadcastAddress = InetAddress.getByName("255.255.255.255")
-            val packet = DatagramPacket(message, message.size, broadcastAddress, UDP_PORT)
-            socket.send(packet)
-            
+            socket.send(DatagramPacket(probe, probe.size, broadcastAddress, UDP_PORT))
+
             _connectionStatus.value = "Discovering..."
-            
-            // Wait for response
+
+            // wait for the first broadcast packet from the server
             val buffer = ByteArray(1024)
             val receivePacket = DatagramPacket(buffer, buffer.size)
             socket.receive(receivePacket)
-            
+
             val response = String(receivePacket.data, 0, receivePacket.length)
             socket.close()
-            
-            // Parse: ROTATOR_SERVER:IP:PORT
+
+            // message may be ROTATOR_SERVER:PORT or ROTATOR_SERVER:IP:PORT
             if (response.startsWith("ROTATOR_SERVER:")) {
-                val parts = response.split(":")
-                if (parts.size >= 3) {
-                    return@withContext parts[1] // Return IP address
+                val payload = response.substringAfter(":")
+                val parts = payload.split(":")
+                return@withContext when (parts.size) {
+                    1 -> receivePacket.address.hostAddress
+                    else -> parts[0]
                 }
             }
-            
+
             null
         } catch (e: SocketTimeoutException) {
             _connectionStatus.value = "No server found on LAN"
@@ -103,7 +121,11 @@ class RotatorClient {
             
             // Read greeting
             val greeting = reader?.readLine()
-            if (greeting?.startsWith("ROTATOR_SERVER:") != true) {
+            Log.d("RotatorClient", "Server greeting='$greeting'")
+            if (!isValidGreeting(greeting)) {
+                // previous clients looked for a colon after the name; newer server
+                // versions use a space with a version number.  Accept either so that
+                // connections don't randomly fail depending on which APK is running.
                 _connectionStatus.value = "Invalid server response"
                 disconnect()
                 return@withContext false

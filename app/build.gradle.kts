@@ -1,8 +1,10 @@
 plugins {
-   id("com.android.application")
-   id("org.jetbrains.kotlin.android")
-	id("org.jetbrains.kotlin.plugin.compose")
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
+
+layout.buildDirectory = File("C:/BuildTemp/RotatorRemote/app")
 
 android {
     namespace = "com.rotator.remote"
@@ -55,10 +57,13 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling") // Added to fix "ClassNotFoundException: androidx.compose.ui.tooling.ComposeViewAdapter"
+    debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
     
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Testing
+    testImplementation("junit:junit:4.13.2")
 }
