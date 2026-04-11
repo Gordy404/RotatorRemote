@@ -355,8 +355,9 @@ class RotatorViewModel(application: Application) : AndroidViewModel(application)
                 showStallAlert = true
                 targetHeading = null
             }
-            message.startsWith("ERROR:HEARTBEAT_TIMEOUT") -> {
-                // Suppress heartbeat timeout error as requested
+            message.uppercase().startsWith("ERROR:HEARTBEAT_TIMEOUT") -> {
+                // Suppress heartbeat timeout — Arduino fires this during rotation when
+                // it hasn't heard from the server recently; not actionable for the user.
                 Log.d(TAG, "Suppressing HEARTBEAT_TIMEOUT error.")
             }
             message.startsWith("ERROR:") -> {
