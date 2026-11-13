@@ -57,8 +57,23 @@ class RotatorViewModel(application: Application) : AndroidViewModel(application)
     var serverIp by mutableStateOf<String?>(null)
         private set
     
-    var manualIp by mutableStateOf("")
-    
+    var manualIp by mutableStateOf(application.getSharedPreferences("rotator_setup", Context.MODE_PRIVATE).getString("manual_ip", "") ?: "")
+
+    var callsign by mutableStateOf("")
+        private set
+    var firstName by mutableStateOf("")
+        private set
+    var antennaName by mutableStateOf("")
+        private set
+
+    private val setupPrefs = application.getSharedPreferences("rotator_setup", Context.MODE_PRIVATE)
+
+    init {
+        callsign    = setupPrefs.getString("callsign",     "") ?: ""
+        firstName   = setupPrefs.getString("first_name",   "") ?: ""
+        antennaName = setupPrefs.getString("antenna_name", "") ?: ""
+    }
+
     // Network
     private var socket: Socket? = null
     private var reader: BufferedReader? = null
@@ -192,6 +207,7 @@ class RotatorViewModel(application: Application) : AndroidViewModel(application)
         if (connectionState == ConnectionState.CONNECTING) return
         Log.d(TAG, "Attempting manual connection to $ip:$port")
         serverIp = ip
+        setupPrefs.edit().putString("manual_ip", ip).apply()
         connectToServer(ip, port)
     }
     
@@ -277,6 +293,9 @@ class RotatorViewModel(application: Application) : AndroidViewModel(application)
                     throw IOException("Auth failed: server said '$response'")
                 }
 
+                // Announce our version so the server can display it
+                sendCommandSync("$PASSWORD|CLIENT_VERSION:${BuildConfig.TEST_BUILD_NUMBER}")
+
                 return true
             } catch (e: Exception) {
                 lastError = e
@@ -339,7 +358,7 @@ class RotatorViewModel(application: Application) : AndroidViewModel(application)
                     val overshoot = (isRotatingCW && heading > target) || (isRotatingCCW && heading < target)
                     if (arrived || overshoot) {
                         stopRotation()
-                        targetHeading = null
+                        updateTargetHeading(null)
                     }
                 }
             }
@@ -353,7 +372,19 @@ class RotatorViewModel(application: Application) : AndroidViewModel(application)
                 isRotatingCW = false
                 isRotatingCCW = false
                 showStallAlert = true
-                targetHeading = null
+                updateTargetHeading(null)
+            }
+            message.startsWith("SETUP:") -> {
+                val parts = message.substringAfter("SETUP:").split("|")
+                callsign    = parts.getOrElse(0) { "" }
+                firstName   = parts.getOrElse(1) { "" }
+                antennaName = parts.getOrElse(2) { "" }
+                setupPrefs.edit().apply {
+                    putString("callsign",     callsign)
+                    putString("first_name",   firstName)
+                    putString("antenna_name", antennaName)
+                    apply()
+                }
             }
             message.uppercase().startsWith("ERROR:HEARTBEAT_TIMEOUT") -> {
                 // Suppress heartbeat timeout — Arduino fires this during rotation when
@@ -378,9 +409,10 @@ class RotatorViewModel(application: Application) : AndroidViewModel(application)
                     val timeSinceChange = System.currentTimeMillis() - lastHeadingChangeTime
                     if (timeSinceChange > STALL_TIMEOUT_MS) {
                         showStallAlert = true
-                        isRotatingCW = false // Stop trying to rotate
+                        isRotatingCW = false
                         isRotatingCCW = false
-                        targetHeading = null
+                        updateTargetHeading(null)
+                        sendCommand("$PASSWORD|STALL_DETECTED")
                     }
                 }
                 delay(500)
@@ -414,18 +446,18 @@ class RotatorViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun startRotateCW() {
-        targetHeading = null // Override automatic target
+        updateTargetHeading(null) // Override automatic target
         rotationControlJob?.cancel()
-        
-        if (isRotatingCCW) return 
+
+        if (isRotatingCCW) return
         sendCommand("$PASSWORD|CW")
         isRotatingCW = true
         lastHeadingChangeTime = System.currentTimeMillis()
         showStallAlert = false
     }
-    
+
     fun startRotateCCW() {
-        targetHeading = null // Override automatic target
+        updateTargetHeading(null) // Override automatic target
         rotationControlJob?.cancel()
         
         if (isRotatingCW) return 
@@ -436,7 +468,7 @@ class RotatorViewModel(application: Application) : AndroidViewModel(application)
     }
     
     fun setTargetHeading(heading: Int) {
-        targetHeading = heading
+        updateTargetHeading(heading)
         rotationControlJob?.cancel()
         rotationControlJob = viewModelScope.launch {
             while (isActive && targetHeading != null) {
@@ -446,14 +478,14 @@ class RotatorViewModel(application: Application) : AndroidViewModel(application)
                 // Within arrival window — stop and let motor coast to target
                 if (Math.abs(current - target) <= ARRIVAL_DEGREES) {
                     stopRotation()
-                    targetHeading = null
+                    updateTargetHeading(null)
                     break
                 }
 
                 // Overshoot: motor passed through the target in the direction of travel
                 if ((isRotatingCW && current > target) || (isRotatingCCW && current < target)) {
                     stopRotation()
-                    targetHeading = null
+                    updateTargetHeading(null)
                     break
                 }
 
@@ -493,6 +525,14 @@ class RotatorViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch(Dispatchers.IO) {
             sendCommandSync(command)
         }
+    }
+
+    // Every local targetHeading change is mirrored to the server so it can
+    // show the same requested-heading pointer on its own compass — the
+    // server doesn't drive rotation for this, it's display-only.
+    private fun updateTargetHeading(heading: Int?) {
+        targetHeading = heading
+        sendCommand(if (heading != null) "$PASSWORD|TARGET:$heading" else "$PASSWORD|TARGET:CLEAR")
     }
 
     private suspend fun sendCommandSync(command: String): Boolean {

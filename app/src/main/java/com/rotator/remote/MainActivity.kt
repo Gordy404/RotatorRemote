@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
                             SplashScreen()
                         } else {
                             RotatorApp(viewModel)
-                            
+
                             // Copyright footer
                             Text(
                                 text = "© 2026 Gordon McBriar GI6FZI",
@@ -90,14 +90,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        Text(
-                            text = "test no ${BuildConfig.TEST_BUILD_NUMBER}",
-                            color = Color.White.copy(alpha = 0.5f),
-                            fontSize = 10.sp,
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .padding(4.dp)
-                        )
                     }
                 }
             }
@@ -181,19 +173,58 @@ fun WarningIcon(modifier: Modifier = Modifier) {
 @Composable
 fun RotatorApp(viewModel: RotatorViewModel) {
     val connectionState = viewModel.connectionState
-    
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
     ) {
         Text(
-            text = "Rotator Control v.1a",
+            text = "Rotator Control",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFFFF8100),
+            modifier = Modifier.padding(top = 0.dp, bottom = 0.dp)
+        )
+        Text(
+            text = "Remote module v.1a.${BuildConfig.TEST_BUILD_NUMBER}",
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFFFF8100),
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 4.dp)
         )
+
+        if (viewModel.firstName.isNotBlank() || viewModel.callsign.isNotBlank() || viewModel.antennaName.isNotBlank()) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = viewModel.firstName,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFFF8100)
+                )
+                Text(
+                    text = viewModel.antennaName,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
+                )
+                Text(
+                    text = viewModel.callsign,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFFF8100),
+                    textAlign = TextAlign.End
+                )
+            }
+        } else {
+            Spacer(modifier = Modifier.height(8.dp))
+        }
 
         ConnectionBar(viewModel)
         
@@ -228,20 +259,17 @@ fun RotatorApp(viewModel: RotatorViewModel) {
     if (viewModel.showStallAlert) {
         AlertDialog(
             onDismissRequest = { viewModel.dismissStallAlert() },
-            title = { 
+            title = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     WarningIcon(modifier = Modifier.size(40.dp))
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Stall Detected", fontWeight = FontWeight.Bold, color = Color.Black)
                 }
             },
-            text = { Text("The antenna hasn't moved in 3 seconds. Check for mechanical issues.", fontWeight = FontWeight.Bold, color = Color.Black) },
+            text = { Text("The antenna has stopped moving. Check for mechanical issues.", fontWeight = FontWeight.Bold, color = Color.Black) },
             confirmButton = {
-                TextButton(onClick = { 
-                    viewModel.dismissStallAlert()
-                    viewModel.stopRotation()
-                }) {
-                    Text("STOP", fontWeight = FontWeight.Bold, color = Color.Black)
+                TextButton(onClick = { viewModel.dismissStallAlert() }) {
+                    Text("CONTINUE", fontWeight = FontWeight.Bold, color = Color.Black)
                 }
             },
             containerColor = Color(0xFFFF8100)
@@ -388,21 +416,21 @@ fun ConnectionScreen(viewModel: RotatorViewModel) {
         
         Text(text = "- OR -", style = MaterialTheme.typography.bodyMedium)
         
-        Spacer(modifier = Modifier.height(1.dp)) // Reduced from 16.dp to move items up by approx 30px (15dp)
-        
+        Spacer(modifier = Modifier.height(16.dp))
+
         OutlinedTextField(
             value = viewModel.manualIp,
             onValueChange = { viewModel.manualIp = it },
             label = { Text("Server IP or Domain") },
-            modifier = Modifier.fillMaxWidth().offset(y = (-5).dp),
+            modifier = Modifier.fillMaxWidth(),
             singleLine = true
         )
-        
-        Spacer(modifier = Modifier.height(1.dp)) // Reduced to move button up further
-        
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         OutlinedButton(
             onClick = { viewModel.connectManual(viewModel.manualIp) },
-            modifier = Modifier.fillMaxWidth().height(56.dp).offset(y = (-10).dp),
+            modifier = Modifier.fillMaxWidth().height(56.dp),
             shape = RoundedCornerShape(8.dp),
             enabled = viewModel.manualIp.isNotBlank()
         ) {
@@ -441,7 +469,7 @@ fun ControlScreen(viewModel: RotatorViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(20.dp))
-        
+
         HeadingIndicator(
             heading = viewModel.currentHeading.toFloat(),
             targetHeading = viewModel.targetHeading?.toFloat(),
@@ -735,6 +763,7 @@ fun HeadingIndicator(
                     close()
                 }
                 drawPath(path, Color.Red)
+                drawCircle(color = Color.Red, radius = 12f * s, center = c)
             }
         }
 
@@ -754,6 +783,7 @@ fun HeadingIndicator(
                         close()
                     }
                     drawPath(path, Color.Green)
+                    drawCircle(color = Color.Green, radius = 12f * s, center = c)
                 }
             }
         }

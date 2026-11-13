@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Arduino SA (Uno, Mega, etc.) -->
+    <usb-device vendor-id="9025" />
+
+    <!-- QinHeng Electronics (CH340 / CH341 clones) -->
+    <usb-device vendor-id="6790" />
+
+    <!-- FTDI -->
+    <usb-device vendor-id="1027" />
+
+    <!-- Silicon Labs (CP210x USB to UART) -->
+    <usb-device vendor-id="4292" />
+
+    <!-- Prolific (PL2303 USB to UART) -->
+    <usb-device vendor-id="1659" />
+</resources>

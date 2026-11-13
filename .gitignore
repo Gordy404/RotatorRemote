@@ -1,0 +1,29 @@
+# Android build outputs
+build/
+*/build/
+**/build/
+
+# Gradle cache/wrapper
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# Local configuration
+local.properties
+*.local.properties
+
+# IDE
+.idea/
+!.idea/codeStyles/
+!.idea/copyright/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Java heap dumps
+*.hprof
+
+# Claude Code worktrees
+.claude/worktrees/
